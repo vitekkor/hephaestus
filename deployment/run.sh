@@ -15,7 +15,8 @@ simple_run_groovy() {
     cd $CHECK_TYPE_SYSTEMS
     git pull
     python3 hephaestus.py -s $TIME_TO_RUN -t $TRANSFORMATIONS -w $CORES --batch 30 -P \
-        --language groovy
+        --language groovy \
+        --cast-numbers --disable-contravariance-use-site
 }
 
 simple_run_java() {
@@ -23,8 +24,9 @@ simple_run_java() {
     # sdk install groovy
     cd $CHECK_TYPE_SYSTEMS
     git pull
-    python3 main.py -s $TIME_TO_RUN -t $TRANSFORMATIONS -w $CORES --batch 30 -P \
-        --language java
+    python3 hephaestus.py -s $TIME_TO_RUN -t $TRANSFORMATIONS -w $CORES --batch 30 -P \
+        --language java \
+        --disable-contravariance-use-site --disable-var-type-inference
 }
 
 simple_run() {
@@ -32,28 +34,9 @@ simple_run() {
     sdk install kotlin
     cd $CHECK_TYPE_SYSTEMS
     git pull
-    python3 hephaestus.py -s $TIME_TO_RUN -t $TRANSFORMATIONS -w $CORES --batch 30 -P
-}
-
-run_groovy_from_source() {
-    source "$HOME/.sdkman/bin/sdkman-init.sh"
-    cd $GROOVY_INSTALLATION
-    git pull
-    ./gradlew clean dist --continue
-    cd $CHECK_TYPE_SYSTEMS
-    git pull
-    python3 main.py -s $TIME_TO_RUN -t $TRANSFORMATIONS -w $CORES --batch 30 -P \
-        --language groovy
-}
-
-run_from_source() {
-    cd $KOTLIN_INSTALLATION
-    git pull
-    ./gradlew clean
-    ./gradlew -Dhttp.socketTimeout=60000 -Dhttp.connectionTimeout=60000 dist
-    cd $CHECK_TYPE_SYSTEMS
-    git pull
-    python3 hephaestus.py -s $TIME_TO_RUN -t $TRANSFORMATIONS -w $CORES --batch 30 -P
+    python3 hephaestus.py -s $TIME_TO_RUN -t $TRANSFORMATIONS -w $CORES --batch 30 -P \
+        --language kotlin \
+        --disable-contravariance-use-site
 }
 
 run_groovy_from_source() {
@@ -64,7 +47,32 @@ run_groovy_from_source() {
     cd $CHECK_TYPE_SYSTEMS
     git pull
     python3 hephaestus.py -s $TIME_TO_RUN -t $TRANSFORMATIONS -w $CORES --batch 30 -P \
-        --language groovy
+        --language groovy \
+        --cast-numbers --disable-contravariance-use-site
+}
+
+run_from_source() {
+    cd $KOTLIN_INSTALLATION
+    git pull
+    ./gradlew clean
+    ./gradlew -Dhttp.socketTimeout=60000 -Dhttp.connectionTimeout=60000 dist
+    cd $CHECK_TYPE_SYSTEMS
+    git pull
+    python3 hephaestus.py -s $TIME_TO_RUN -t $TRANSFORMATIONS -w $CORES --batch 30 -P \
+        --language kotlin \
+        --disable-contravariance-use-site
+}
+
+run_groovy_from_source() {
+    source "$HOME/.sdkman/bin/sdkman-init.sh"
+    cd $GROOVY_INSTALLATION
+    git pull
+    ./gradlew clean dist --continue
+    cd $CHECK_TYPE_SYSTEMS
+    git pull
+    python3 hephaestus.py -s $TIME_TO_RUN -t $TRANSFORMATIONS -w $CORES --batch 30 -P \
+        --language groovy \
+        --cast-numbers --disable-contravariance-use-site
 }
 
 run_multiple_versions() {
