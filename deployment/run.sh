@@ -75,6 +75,17 @@ run_groovy_from_source() {
         --cast-numbers --disable-contravariance-use-site
 }
 
+run_java_from_source() {
+    cd $JAVA_INSTALLATION
+    git pull origin master
+    make jdk
+    cd $CHECK_TYPE_SYSTEMS
+    git pull origin stable
+    python3 main.py -s $TIME_TO_RUN -t $TRANSFORMATIONS -w $CORES --batch 30 -P \
+        --language java \
+        --disable-contravariance-use-site --disable-var-type-inference
+}
+
 run_multiple_versions() {
     cd $CHECK_TYPE_SYSTEMS
     git pull origin stable
