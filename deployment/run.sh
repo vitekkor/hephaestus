@@ -24,9 +24,8 @@ simple_run_java() {
     # sdk install groovy
     cd $CHECK_TYPE_SYSTEMS
     git pull origin stable
-    python3 hephaestus.py -s $TIME_TO_RUN -t $TRANSFORMATIONS -w $CORES --batch 30 -P \
-        --language java \
-        --disable-contravariance-use-site --disable-var-type-inference
+    python3 main.py -s $TIME_TO_RUN -t $TRANSFORMATIONS -w $CORES --batch 30 -P \
+        --language java
 }
 
 simple_run() {
@@ -34,9 +33,8 @@ simple_run() {
     sdk install kotlin
     cd $CHECK_TYPE_SYSTEMS
     git pull origin stable
-    python3 hephaestus.py -s $TIME_TO_RUN -t $TRANSFORMATIONS -w $CORES --batch 30 -P \
-        --language kotlin \
-        --disable-contravariance-use-site
+    python3 main.py -s $TIME_TO_RUN -t $TRANSFORMATIONS -w $CORES --batch 30 -P \
+        --language kotlin
 }
 
 run_groovy_from_source() {
@@ -58,9 +56,8 @@ run_from_source() {
     ./gradlew -Dhttp.socketTimeout=60000 -Dhttp.connectionTimeout=60000 dist
     cd $CHECK_TYPE_SYSTEMS
     git pull origin stable
-    python3 hephaestus.py -s $TIME_TO_RUN -t $TRANSFORMATIONS -w $CORES --batch 30 -P \
-        --language kotlin \
-        --disable-contravariance-use-site
+    python3 main.py -s $TIME_TO_RUN -t $TRANSFORMATIONS -w $CORES --batch 30 -P \
+        --language kotlin
 }
 
 run_groovy_from_source() {
@@ -82,8 +79,7 @@ run_java_from_source() {
     cd $CHECK_TYPE_SYSTEMS
     git pull origin stable
     python3 main.py -s $TIME_TO_RUN -t $TRANSFORMATIONS -w $CORES --batch 30 -P \
-        --language java \
-        --disable-contravariance-use-site --disable-var-type-inference
+        --language java
 }
 
 run_multiple_versions() {
