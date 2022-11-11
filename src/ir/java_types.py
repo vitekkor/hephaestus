@@ -1,29 +1,40 @@
 # pylint: disable=abstract-method, useless-super-delegation,too-many-ancestors
 # pylint: disable=too-few-public-methods
+import src.ir.kotlin_types
 from src.ir.types import Builtin
-
 
 import src.ir.builtins as bt
 import src.ir.types as tp
 
 
 class JavaBuiltinFactory(bt.BuiltinFactory):
+    language = "java"
+
+    def set_language(self, lang):
+        self.language = lang
+
     def get_language(self):
-        return "java"
+        return self.language
 
     def get_builtin(self):
         return JavaBuiltin
 
     def get_void_type(self):
+        if self.language == "kotlin":
+            return src.ir.kotlin_types.UnitType()
         return VoidType()
 
     def get_any_type(self):
+        if self.language == "kotlin":
+            return src.ir.kotlin_types.AnyType()
         return ObjectType()
 
     def get_number_type(self):
         return NumberType()
 
     def get_integer_type(self):
+        if self.language == "kotlin":
+            return src.ir.kotlin_types.IntegerType()
         return IntegerType(primitive=False)
 
     def get_byte_type(self):
@@ -36,18 +47,28 @@ class JavaBuiltinFactory(bt.BuiltinFactory):
         return LongType(primitive=False)
 
     def get_float_type(self):
+        if self.language == "kotlin":
+            return src.ir.kotlin_types.FloatType()
         return FloatType(primitive=False)
 
     def get_double_type(self):
+        if self.language == "kotlin":
+            return src.ir.kotlin_types.DoubleType()
         return DoubleType(primitive=False)
 
     def get_big_decimal_type(self):
+        if self.language == "kotlin":
+            return src.ir.kotlin_types.DoubleType()
         return DoubleType(primitive=False)
 
     def get_boolean_type(self):
+        if self.language == "kotlin":
+            return src.ir.kotlin_types.BooleanType()
         return BooleanType(primitive=False)
 
     def get_char_type(self):
+        if self.language == "kotlin":
+            return src.ir.kotlin_types.CharType()
         return CharType(primitive=False)
 
     def get_string_type(self):
@@ -57,12 +78,27 @@ class JavaBuiltinFactory(bt.BuiltinFactory):
         return ArrayType()
 
     def get_big_integer_type(self):
+        if self.language == "kotlin":
+            return src.ir.kotlin_types.IntegerType()
         return IntegerType(primitive=False)
 
     def get_function_type(self, nr_parameters=0):
+        if self.language == "kotlin":
+            return src.ir.kotlin_types.FunctionType(nr_parameters)
         return FunctionType(nr_parameters)
 
     def get_primitive_types(self):
+        if self.language == "kotlin":
+            return [
+                src.ir.kotlin_types.ByteType(),
+                src.ir.kotlin_types.ShortType(),
+                src.ir.kotlin_types.IntegerType(),
+                src.ir.kotlin_types.LongType(),
+                src.ir.kotlin_types.FloatType(),
+                src.ir.kotlin_types.DoubleType(),
+                src.ir.kotlin_types.CharType(),
+                src.ir.kotlin_types.BooleanType()
+            ]
         return [
             ByteType(primitive=True),
             ShortType(primitive=True),
@@ -75,9 +111,24 @@ class JavaBuiltinFactory(bt.BuiltinFactory):
         ]
 
     def get_non_nothing_types(self):
+        if self.language == "kotlin":
+            types = super().get_non_nothing_types()
+            types.extend([
+                src.ir.kotlin_types.DoubleArray,
+                src.ir.kotlin_types.FloatArray,
+                src.ir.kotlin_types.LongArray,
+                src.ir.kotlin_types.IntegerArray,
+                src.ir.kotlin_types.ShortArray,
+                src.ir.kotlin_types.ByteArray,
+                src.ir.kotlin_types.CharArray,
+                src.ir.kotlin_types.BooleanArray
+            ])
+            return types
         return super().get_non_nothing_types() + self.get_primitive_types()
 
     def get_number_types(self):
+        if self.language == "kotlin":
+            super().get_number_types()
         return super().get_number_types() + self.get_primitive_types()[:-1]
 
 
@@ -352,9 +403,9 @@ class FunctionType(tp.TypeConstructor):
     def __init__(self, nr_type_parameters: int):
         name = "Function" + str(nr_type_parameters)
         type_parameters = [
-            tp.TypeParameter("A" + str(i))
-            for i in range(1, nr_type_parameters + 1)
-        ] + [tp.TypeParameter("R")]
+                              tp.TypeParameter("A" + str(i))
+                              for i in range(1, nr_type_parameters + 1)
+                          ] + [tp.TypeParameter("R")]
         self.nr_type_parameters = nr_type_parameters
         super().__init__(name, type_parameters)
 

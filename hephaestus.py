@@ -12,6 +12,7 @@ import time
 import traceback
 from collections import namedtuple, OrderedDict
 
+from src.ir import BUILTIN_FACTORIES
 from src.args import args as cli_args, validate_args, pre_process_args
 from src import utils
 from src.compilers.kotlin import KotlinCompiler
@@ -273,6 +274,13 @@ def gen_program(pid, dirname, packages):
     proc = ProgramProcessor(pid, cli_args)
     try:
         program, oracle = proc.get_program()
+        translator2 = TRANSLATORS["kotlin"]('src.' + packages[0],
+                                                cli_args.options['Translator'])
+        java = utils.translate_program(translator, program)
+
+        BUILTIN_FACTORIES["java"].set_language("kotlin")
+
+        kotlin = utils.translate_program(translator2, program)
         if cli_args.examine:
             print("pp program.context._context (to print the context)")
             __import__('ipdb').set_trace()
